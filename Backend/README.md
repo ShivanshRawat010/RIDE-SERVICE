@@ -27,3 +27,21 @@ Registers a new user.
   "email": "john.doe@example.com",
   "password": "password123"
 }
+```
+
+### Example Response
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "_id": "60c72b2f9b1e8b001c8e4b8a",
+    "fullName": {
+      "firstName": "John",
+      "lastName": "Doe"
+    },
+    "email": "john.doe@example.com",
+    "password": "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36F5l9e2y5K9E6y5K9E6y5K",
+    "socketId": null
+  }
+}
+```
