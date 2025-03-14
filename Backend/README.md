@@ -45,3 +45,81 @@ Registers a new user.
   }
 }
 ```
+
+### Validation Errors
+- `400 Bad Request`: Returns validation errors if the request body is invalid.
+  - `errors` (array): An array of validation error objects.
+    - `msg` (string): The error message.
+    - `param` (string): The parameter that caused the error.
+    - `location` (string): The location of the parameter (e.g., "body").
+
+### Example Validation Error Response
+```json
+{
+  "errors": [
+    {
+      "msg": "Invalid Email",
+      "param": "email",
+      "location": "body"
+    }
+  ]
+}
+```
+
+## POST /users/login
+
+### Description
+Logs in an existing user.
+
+### Request Body
+- `email` (string, required): The email address of the user.
+- `password` (string, required): The password for the user.
+
+### Response
+- `200 OK`: Returns the authenticated user and an authentication token.
+  - `token` (string): The authentication token.
+  - `user` (object): The authenticated user object.
+
+### Example Request
+```json
+{
+  "email": "john.doe@example.com",
+  "password": "password123"
+}
+```
+
+### Example Response
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "_id": "60c72b2f9b1e8b001c8e4b8a",
+    "fullName": {
+      "firstName": "John",
+      "lastName": "Doe"
+    },
+    "email": "john.doe@example.com",
+    "socketId": null
+  }
+}
+```
+
+### Validation Errors
+- `400 Bad Request`: Returns validation errors if the request body is invalid.
+  - `errors` (array): An array of validation error objects.
+    - `msg` (string): The error message.
+    - `param` (string): The parameter that caused the error.
+    - `location` (string): The location of the parameter (e.g., "body").
+
+### Example Validation Error Response
+```json
+{
+  "errors": [
+    {
+      "msg": "Invalid Email",
+      "param": "email",
+      "location": "body"
+    }
+  ]
+}
+```
