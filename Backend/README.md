@@ -123,3 +123,60 @@ Logs in an existing user.
   ]
 }
 ```
+
+## GET /users/profile
+
+### Description
+Retrieves the profile of the authenticated user.
+
+### Authentication
+Requires a valid authentication token in the cookies.
+
+### Response
+- `200 OK`: Returns the user profile
+  - `user` (object): The authenticated user's information
+
+### Example Response
+```json
+{
+  "_id": "60c72b2f9b1e8b001c8e4b8a",
+  "fullName": {
+    "firstName": "John",
+    "lastName": "Doe"
+  },
+  "email": "john.doe@example.com",
+  "socketId": null
+}
+```
+
+### Errors
+- `401 Unauthorized`: Returns when the token is missing, invalid, or blacklisted
+  ```json
+  {
+    "message": "Unauthorized"
+  }
+  ```
+
+## GET /users/logout
+
+### Description
+Logs out the current user by clearing their authentication token and blacklisting it.
+
+### Authentication
+Requires a valid authentication token in the cookies.
+
+### Response
+- `200 OK`: Returns a success message
+  ```json
+  {
+    "message": "Logged Out"
+  }
+  ```
+
+### Errors
+- `401 Unauthorized`: Returns when the token is missing, invalid, or blacklisted
+  ```json
+  {
+    "message": "Unauthorized"
+  }
+  ```
