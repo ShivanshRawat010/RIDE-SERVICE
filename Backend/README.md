@@ -180,3 +180,86 @@ Requires a valid authentication token in the cookies.
     "message": "Unauthorized"
   }
   ```
+
+## POST /captains/register
+
+### Description
+Registers a new captain.
+
+### Request Body
+- `fullName` (object): The full name of the captain
+  - `firstName` (string, required): The first name of the captain
+  - `lastName` (string, optional): The last name of the captain
+- `email` (string, required): The email address of the captain
+- `password` (string, required): The password for the captain
+- `vehicle` (object, required): The vehicle details
+  - `color` (string, required): Color of the vehicle
+  - `plate` (string, required): License plate number
+  - `capacity` (number, required): Vehicle capacity (minimum: 1)
+  - `vehicleType` (string, required): Type of vehicle (must be 'car', 'bike', or 'auto')
+
+### Response
+- `201 Created`: Returns the created captain and an authentication token
+  - `token` (string): The authentication token
+  - `captain` (object): The created captain object
+
+### Example Request
+```json
+{
+  "fullName": {
+    "firstName": "John",
+    "lastName": "Smith"
+  },
+  "email": "john.smith@example.com",
+  "password": "password123",
+  "vehicle": {
+    "color": "Black",
+    "plate": "ABC-123",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}
+```
+
+### Example Response
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "captain": {
+    "_id": "60c72b2f9b1e8b001c8e4b8a",
+    "fullName": {
+      "firstName": "John",
+      "lastName": "Smith"
+    },
+    "email": "john.smith@example.com",
+    "password": "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+    "status": "inactive",
+    "vehicle": {
+      "color": "Black",
+      "plate": "ABC-123",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+  }
+}
+```
+
+### Validation Errors
+- `400 Bad Request`: Returns validation errors if the request body is invalid
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "Invalid Email",
+        "param": "email",
+        "location": "body"
+      }
+    ]
+  }
+  ```
+- `400 Bad Request`: Returns error if captain already exists
+  ```json
+  {
+    "message": "Captain already exists"
+  }
+  ```
