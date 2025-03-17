@@ -263,3 +263,130 @@ Registers a new captain.
     "message": "Captain already exists"
   }
   ```
+
+## POST /captains/login
+
+### Description
+Logs in an existing captain.
+
+### Request Body
+- `email` (string, required): The email address of the captain
+- `password` (string, required): The password for the captain
+
+### Response
+- `200 OK`: Returns the authenticated captain and an authentication token
+  - `token` (string): The authentication token
+  - `captain` (object): The authenticated captain object
+
+### Example Request
+```json
+{
+  "email": "john.smith@example.com",
+  "password": "password123"
+}
+```
+
+### Example Response
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "captain": {
+    "_id": "60c72b2f9b1e8b001c8e4b8a",
+    "fullName": {
+      "firstName": "John",
+      "lastName": "Smith"
+    },
+    "email": "john.smith@example.com",
+    "status": "inactive",
+    "vehicle": {
+      "color": "Black",
+      "plate": "ABC-123",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+  }
+}
+```
+
+### Errors
+- `401 Unauthorized`: Returns when credentials are invalid
+  ```json
+  {
+    "message": "Invalid credentials"
+  }
+  ```
+- `400 Bad Request`: Returns validation errors if email format is invalid
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "Invalid Email",
+        "param": "email",
+        "location": "body"
+      }
+    ]
+  }
+  ```
+
+## GET /captains/profile
+
+### Description
+Retrieves the profile of the authenticated captain.
+
+### Authentication
+Requires a valid authentication token in the cookies.
+
+### Response
+- `200 OK`: Returns the captain profile
+  - `captain` (object): The authenticated captain's information
+
+### Example Response
+```json
+{
+  "_id": "60c72b2f9b1e8b001c8e4b8a",
+  "fullName": {
+    "firstName": "John",
+    "lastName": "Smith"
+  },
+  "email": "john.smith@example.com",
+  "status": "inactive",
+  "vehicle": {
+    "color": "Black",
+    "plate": "ABC-123",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}
+```
+
+### Errors
+- `401 Unauthorized`: Returns when the token is missing, invalid, or blacklisted
+  ```json
+  {
+    "message": "Unauthorized"
+  }
+  ```
+
+## GET /captains/logout
+
+### Description
+Logs out the current captain by clearing their authentication token and blacklisting it.
+
+### Authentication
+Requires a valid authentication token in the cookies.
+
+### Response
+- `200 OK`: Returns a success message
+  ```json
+  {
+    "message": "Logged out"
+  }
+  ```
+
+### Errors
+- `401 Unauthorized`: Returns when the token is missing, invalid, or blacklisted
+  ```json
+  {
+    "message": "Unauthorized"
+  }
+  ```
