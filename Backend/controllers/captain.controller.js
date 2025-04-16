@@ -70,8 +70,12 @@ module.exports.getCaptainProfile = async function(req,res,next){
 
 module.exports.logoutCaptain = async function(req,res,next){
 
-  token = req.cookies.token
-  await blacklistedTokenModel.create({token: req.cookies.token})
+  token = req.cookies.token || req.headers.authorization?.split(' ')[ 1 ];
+  
+  const existingToken = await blacklistedTokenModel.findOne({ token });
+  if (!existingToken) {
+    await blacklistedTokenModel.create({ token });
+  }
 
   res.clearCookie('token')
   res.status(200).json({message: 'Logged out'})

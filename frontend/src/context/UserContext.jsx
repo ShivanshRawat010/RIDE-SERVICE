@@ -1,5 +1,4 @@
 import React, { createContext, useState } from 'react'
-import { useContext } from 'react'
 
 export const UserDataContext = createContext()
 

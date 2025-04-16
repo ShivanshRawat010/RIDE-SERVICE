@@ -14,6 +14,6 @@ router.post('/login', [body('email').isEmail().withMessage('Invalid Email')] ,ca
 
 router.get('/profile', authCaptain, captainController.getCaptainProfile)
 
-router.get('/logout', authCaptain, captainController.logoutCaptain)
+router.get('/logout', captainController.logoutCaptain)
 
 module.exports = router

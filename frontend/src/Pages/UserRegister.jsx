@@ -40,6 +40,10 @@ const UserRegister = () => {
       navigate('/home');
     }
 
+    setEmail('');
+    setPassword('');
+    setFirstName('');
+    setLastName('');
   }
 
   return (
