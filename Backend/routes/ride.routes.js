@@ -4,7 +4,7 @@ const router = express.Router();
 
 const authMiddleware = require('../middlewares/auth.middleware');
 
-const { body } = require('express-validator');
+const { body,query } = require('express-validator');
 
 router.post('/create',
   authMiddleware.authUser,
@@ -13,5 +13,7 @@ router.post('/create',
   body('vehicleType').notEmpty().withMessage('Vehicle type is required'),
   rideController.createRide
 );
+
+router.get('/get-fare', authMiddleware.authUser, query('pickup').notEmpty(), query('destination').notEmpty(),rideController.getFare);
 
 module.exports = router;

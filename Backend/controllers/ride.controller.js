@@ -15,3 +15,18 @@ module.exports.createRide = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 }
+
+module.exports.getFare = async (req, res) => {
+  const { pickup, destination } = req.query;
+
+  if (!pickup || !destination) {
+    return res.status(400).json({ error: 'Pickup, destination are required' });
+  }
+
+  try {
+    const data = await rideService.calculateFare(pickup, destination);
+    return res.status(200).json(data.fares);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}

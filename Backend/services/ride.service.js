@@ -9,9 +9,9 @@ function generateOtp(length) {
   return crypto.randomInt(min, max + 1).toString();
 }
 
-async function calculateFare(pickup, destination, vehicleType) {
-  if (!pickup || !destination || !vehicleType) {
-    throw new Error('Pickup, destination, and vehicle type are required');
+module.exports.calculateFare = async (pickup, destination) => {
+  if (!pickup || !destination) {
+    throw new Error('Pickup and destination are required');
   }
 
   const { distance, duration } = await mapService.getDistancecTimeService(pickup, destination);
@@ -22,15 +22,20 @@ async function calculateFare(pickup, destination, vehicleType) {
     motorcycle: { base: 20, perKm: 5,  perMin: 1 }
   };
 
-  const rates = fareRates[vehicleType];
-  if (!rates) throw new Error('Invalid vehicle type');
-
   const distanceInKm = distance / 1000;
   const durationInMin = duration / 60;
 
-  const fare = rates.base + (rates.perKm * distanceInKm) + (rates.perMin * durationInMin);
+  const fares = {};
+  for (const [type, rates] of Object.entries(fareRates)) {
+    const fare = rates.base + (rates.perKm * distanceInKm) + (rates.perMin * durationInMin);
+    fares[type] = Number(fare.toFixed(2));
+  }
 
-  return { fare, distance: distanceInKm, duration: durationInMin };
+  return {
+    fares: fares,
+    distance: Number(distanceInKm.toFixed(2)),
+    duration: Number(durationInMin.toFixed(2))
+  };
 }
 
 module.exports.createRideService = async ({pickup, destination, vehicleType, user}) => {
@@ -40,13 +45,13 @@ module.exports.createRideService = async ({pickup, destination, vehicleType, use
     throw new Error('Pickup, destination, and vehicle type are required');
   }
 
-  let data = await calculateFare(pickup, destination, vehicleType);
+  let data = await calculateFare(pickup, destination);
 
   const rideData = {
     user,
     pickup,
     destination,
-    fare: data.fare,
+    fare: data.fares[vehicleType],
     distance: data.distance,
     duration: data.duration,
     otp: generateOtp(4),
