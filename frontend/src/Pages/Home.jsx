@@ -96,6 +96,12 @@ const Home = () => {
     
     fetchFare();
   }, [vehiclePanel]);
+
+  useEffect(() => {
+    if (fare) {
+      console.log(fare);
+    }
+  }, [fare]);
   
   return (
     <div className='w-full h-screen bg-white relative overflow-hidden'>
@@ -147,7 +153,6 @@ const Home = () => {
               <button className='w-full h-10 rounded-md bg-emerald-500 text-white text-[1rem]' onClick={(e)=>{
                 e.preventDefault();
                 setVehiclePanel(true);
-                console.log(fare);
               }}>
                 Choose Vehicle
               </button>
@@ -155,7 +160,7 @@ const Home = () => {
               
           </form>
           
-          {pSelected && (
+          {select && pSelected && (
             <div className='w-full flex h-full mt-4 flex-col gap-4'>
               {
                 Array.isArray(pS) && pS.map((item, index) => (
@@ -174,7 +179,7 @@ const Home = () => {
               }
             </div>
           )}
-          {dSelected && (
+          { select && dSelected && (
             <div className='w-full flex h-full mt-4 flex-col gap-4'>
               {
                 Array.isArray(dS) && dS.map((item, index) => (
@@ -216,25 +221,25 @@ const Home = () => {
             <h3>
               Car
             </h3>
-            {/* <h3>
-              {fare[car]}
-            </h3> */}
+            <h3>
+              {fare && fare["car"]}
+            </h3>
           </div>
           <div className='w-full flex items-center justify-between rounded-md bg-white p-4 mb-4 cursor-pointer hover:shadow-lg transition-all duration-300 h-20 font-bold'>
             <h3>
               Moto
             </h3>
-            {/* <h3>
-              {fare[motorcycle]}
-            </h3> */}
+            <h3>
+              {fare && fare["motorcycle"]}
+            </h3>
           </div>
           <div className='w-full flex items-center justify-between rounded-md bg-white p-4 mb-4 cursor-pointer hover:shadow-lg transition-all duration-300 h-20 font-bold'>
             <h3>
               Auto
             </h3>
-            {/* <h3>
-              {fare[auto]}
-            </h3>  */}
+            <h3>
+              {fare && fare["auto"]}
+            </h3> 
           </div>
         </div>
       )}
