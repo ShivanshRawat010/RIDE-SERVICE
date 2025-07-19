@@ -390,3 +390,165 @@ Requires a valid authentication token in the cookies.
     "message": "Unauthorized"
   }
   ```
+
+## MAP ROUTES
+
+### GET /maps/get-suggested-places
+
+**Description:**
+Returns a list of suggested places based on a partial address or location input.
+
+**Request Headers:**
+- `address` (string, required): The partial address or location string to search for suggestions.
+- `Authorization` (string, required): Bearer token for authentication.
+
+**Response:**
+- `200 OK`: Returns an array of suggested places.
+  - Each item contains a `description` field with the place name or address.
+
+**Example Response:**
+```json
+{
+  "predictions": [
+    { "description": "Connaught Place, Delhi, India" },
+    { "description": "Connaught Circus, Delhi, India" }
+  ]
+}
+```
+
+**Errors:**
+- `400 Bad Request`: Returns if the address header is missing or invalid.
+  ```json
+  { "message": "Address header is required" }
+  ```
+- `401 Unauthorized`: Returns if the authentication token is missing or invalid.
+  ```json
+  { "message": "Unauthorized" }
+  ```
+
+### GET /maps/get-distance-time
+
+**Description:**
+Returns the distance (in meters) and estimated duration (in seconds) between two locations.
+
+**Request Query Parameters:**
+- `pickup` (string, required): The pickup location address or coordinates.
+- `destination` (string, required): The destination location address or coordinates.
+- `Authorization` (string, required): Bearer token for authentication.
+
+**Response:**
+- `200 OK`: Returns the distance and duration between the two locations.
+  - `distance` (number): Distance in meters.
+  - `duration` (number): Duration in seconds.
+
+**Example Response:**
+```json
+{
+  "distance": 25300,
+  "duration": 2712
+}
+```
+
+**Errors:**
+- `400 Bad Request`: Returns if pickup or destination is missing or invalid.
+  ```json
+  { "message": "Pickup and destination are required" }
+  ```
+- `401 Unauthorized`: Returns if the authentication token is missing or invalid.
+  ```json
+  { "message": "Unauthorized" }
+  ```
+
+---
+
+## RIDE ROUTES
+
+### GET /rides/get-fare
+
+**Description:**
+Calculates and returns the estimated fare for a trip between a pickup and destination location for all vehicle types.
+
+**Request Query Parameters:**
+- `pickup` (string, required): The pickup location address or coordinates.
+- `destination` (string, required): The destination location address or coordinates.
+- `Authorization` (string, required): Bearer token for authentication.
+
+**Response:**
+- `200 OK`: Returns the estimated fares for all vehicle types.
+  - `car` (number): Estimated fare for car.
+  - `auto` (number): Estimated fare for auto.
+  - `motorcycle` (number): Estimated fare for motorcycle.
+
+**Example Response:**
+```json
+{
+  "car": 1151.57,
+  "auto": 899.46,
+  "motorcycle": 570.78
+}
+```
+
+**Errors:**
+- `400 Bad Request`: Returns if pickup or destination is missing or invalid.
+  ```json
+  { "message": "Pickup and destination are required" }
+  ```
+- `401 Unauthorized`: Returns if the authentication token is missing or invalid.
+  ```json
+  { "message": "Unauthorized" }
+  ```
+
+### POST /rides/create
+
+**Description:**
+Creates a new ride with the selected vehicle type, pickup, and destination.
+
+**Request Body:**
+- `pickup` (string, required): The pickup location address or coordinates.
+- `destination` (string, required): The destination location address or coordinates.
+- `vehicleType` (string, required): The type of vehicle selected (`car`, `auto`, or `motorcycle`).
+- `user` (string, required): The user ID or user object.
+- `Authorization` (string, required): Bearer token for authentication.
+
+**Response:**
+- `201 Created`: Returns the created ride object.
+  - `user` (object): The user who created the ride.
+  - `pickup` (string): The pickup location.
+  - `destination` (string): The destination location.
+  - `fare` (number): The fare for the selected vehicle type.
+  - `distance` (number): The distance in kilometers.
+  - `duration` (number): The duration in minutes.
+  - `otp` (string): The OTP for the ride.
+
+**Example Request:**
+```json
+{
+  "pickup": "Connaught Place, Delhi",
+  "destination": "Noida City Centre, Noida",
+  "vehicleType": "car",
+  "user": "60c72b2f9b1e8b001c8e4b8a"
+}
+```
+
+**Example Response:**
+```json
+{
+  "user": "60c72b2f9b1e8b001c8e4b8a",
+  "pickup": "Connaught Place, Delhi",
+  "destination": "Noida City Centre, Noida",
+  "fare": 1151.57,
+  "distance": 25.3,
+  "duration": 45.2,
+  "otp": "1234"
+}
+```
+
+**Errors:**
+- `400 Bad Request`: Returns if any required field is missing or invalid.
+  ```json
+  { "message": "Pickup, destination, and vehicle type are required" }
+  ```
+- `401 Unauthorized`: Returns if the authentication token is missing or invalid.
+  ```json
+  { "message": "Unauthorized" }
+  ```

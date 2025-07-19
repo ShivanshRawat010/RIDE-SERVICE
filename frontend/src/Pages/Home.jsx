@@ -1,7 +1,9 @@
 import gsap from 'gsap'
-import { useEffect,useState } from 'react'
+import { useEffect,useState,useContext } from 'react'
 import { FaAngleDown,FaAngleLeft,FaLocationDot } from "react-icons/fa6";
 import axios from 'axios';
+import { SocketContext } from '../context/SocketContext';
+import {UserDataContext} from '../context/UserContext';
 
 const Home = () => {
 
@@ -16,9 +18,17 @@ const Home = () => {
   const [vehicle, setVehicle] = useState();
   const [fare, setFare] = useState();
 
+  const {user} = useContext(UserDataContext);
+  const {socket} = useContext(SocketContext);
+
   const submitHandler = (e) => {
     e.preventDefault();
   }
+
+  useEffect(() => {
+    console.log('User data:', user);
+    socket.emit('join', {userId: user._id, userType: 'user'});
+  })
 
   useEffect(() => {
 
@@ -98,10 +108,10 @@ const Home = () => {
   }, [vehiclePanel]);
 
   useEffect(() => {
-    if (fare) {
-      console.log(fare);
+    if (vehicle) {
+      console.log(fare[vehicle]);
     }
-  }, [fare]);
+  }, [vehicle]);
   
   return (
     <div className='w-full h-screen bg-white relative overflow-hidden'>
@@ -217,30 +227,39 @@ const Home = () => {
             </h1>
           </div>
 
-          <div className='w-full flex items-center justify-between rounded-md bg-white p-4 mb-4 cursor-pointer hover:shadow-lg transition-all duration-300 h-20 font-bold'>
+          <button onClick={(e)=>{
+            e.preventDefault();
+            setVehicle('car');
+          }} className='w-full flex items-center justify-between rounded-md bg-white p-4 mb-4 cursor-pointer hover:shadow-lg transition-all duration-300 h-20 font-bold'>
             <h3>
               Car
             </h3>
             <h3>
               {fare && fare["car"]}
             </h3>
-          </div>
-          <div className='w-full flex items-center justify-between rounded-md bg-white p-4 mb-4 cursor-pointer hover:shadow-lg transition-all duration-300 h-20 font-bold'>
+          </button>
+          <button onClick={(e)=>{
+            e.preventDefault();
+            setVehicle('motorcycle');
+          }} className='w-full flex items-center justify-between rounded-md bg-white p-4 mb-4 cursor-pointer hover:shadow-lg transition-all duration-300 h-20 font-bold'>
             <h3>
               Moto
             </h3>
             <h3>
               {fare && fare["motorcycle"]}
             </h3>
-          </div>
-          <div className='w-full flex items-center justify-between rounded-md bg-white p-4 mb-4 cursor-pointer hover:shadow-lg transition-all duration-300 h-20 font-bold'>
+          </button>
+          <button onClick={(e)=>{
+            e.preventDefault();
+            setVehicle('auto');
+          }} className='w-full flex items-center justify-between rounded-md bg-white p-4 mb-4 cursor-pointer hover:shadow-lg transition-all duration-300 h-20 font-bold'>
             <h3>
               Auto
             </h3>
             <h3>
               {fare && fare["auto"]}
             </h3> 
-          </div>
+          </button>
         </div>
       )}
 

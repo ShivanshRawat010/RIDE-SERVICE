@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +11,7 @@ const LoginPage = () => {
 
   const navigate = useNavigate();
 
-  const {user,setUser} = React.useContext(UserDataContext);
+  const {setUser} = useContext(UserDataContext);
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -28,6 +28,7 @@ const LoginPage = () => {
       setUser(data.user);
 
       localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
     
       navigate('/home');
     }
