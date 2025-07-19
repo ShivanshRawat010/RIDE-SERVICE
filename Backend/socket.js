@@ -31,7 +31,6 @@ function initSocket(server) {
       console.log('User disconnected:', socket.id);
     });
 
-    // Add more event listeners as needed
   });
 }
 

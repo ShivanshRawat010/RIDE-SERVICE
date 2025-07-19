@@ -26,7 +26,7 @@ const Home = () => {
   }
 
   useEffect(() => {
-    console.log('User data:', user);
+    // console.log('User data:', user);
     socket.emit('join', {userId: user._id, userType: 'user'});
   })
 
