@@ -45,7 +45,7 @@ module.exports.createRideService = async ({pickup, destination, vehicleType, use
     throw new Error('Pickup, destination, and vehicle type are required');
   }
 
-  let data = await calculateFare(pickup, destination);
+  let data = await this.calculateFare(pickup, destination);
 
   const rideData = {
     user,

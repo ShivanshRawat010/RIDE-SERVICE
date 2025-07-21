@@ -1,24 +1,25 @@
 import React from 'react'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { CaptainDataContext } from '../context/CaptainContext'
 import {SocketContext} from '../context/SocketContext';
+import ConfirmRide from '../../Components/ConfirmRide';
 
 
 const CaptainHome = () => {
 
-  const { captain } = useContext(CaptainDataContext)
-  const { socket } = useContext(SocketContext)
+  const { captain } = useContext(CaptainDataContext);
+  const { socket } = useContext(SocketContext);
+
+  const [ride,setRide] = useState();
+  const [confirm, setConfirm] = useState(false);
 
   useEffect(() => {
-    // console.log('Captain data:', captain);
     socket.emit('join', { userId: captain._id, userType: 'captain' });
-
-    
 
     const intervalId = setInterval(() => {
       if (navigator.geolocation && captain?._id) {
         navigator.geolocation.getCurrentPosition((position) => {
-          console.log(`Updating location for captain: ${captain._id}, Location: ${position.coords.latitude}, ${position.coords.longitude}`);
+          // console.log(position.coords.latitude, position.coords.longitude);
           socket.emit('update-location-captain', {
             captainId: captain._id,
             location: {
@@ -30,11 +31,18 @@ const CaptainHome = () => {
       }
     }, 10000);
 
-  }, [captain, socket]);
+    socket.on('message', (message) => {
+      setRide(message);
+      setConfirm(true);
+    });
+  }, [ride]);
 
   return (
-    <div>
-      Captain Home
+    <div className='relative w-full h-screen bg-gray-900 overflow-hidden'>
+      {
+        ride && <ConfirmRide ride={ride} confirm={confirm} setConfirm={setConfirm} setRide={setRide}/>
+      }
+      
     </div>
   )
 }

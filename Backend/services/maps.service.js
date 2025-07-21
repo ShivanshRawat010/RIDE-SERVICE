@@ -72,13 +72,14 @@ module.exports.getSuggestedPlacesService = async (address) => {
 }
 
 module.exports.getCaptainsWithinRadiusService = async (latitude, longitude, radius) => {
-  const earthRadiusInMeters = 6378137;
-  const radiusInRadians = radius / earthRadiusInMeters;
+  const earthRadiusInKilometers = 6378;
+  const radiusInKilometers = radius;
+  const radiusInRadians = radiusInKilometers / earthRadiusInKilometers;
 
   const captains = await captainModel.find({
     location: {
       $geoWithin: {
-        $centerSphere: [[longitude, latitude], radiusInRadians]
+        $centerSphere: [[latitude, longitude], radiusInRadians]
       }
     }
   });
