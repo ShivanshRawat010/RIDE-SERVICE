@@ -4,6 +4,7 @@ import { CaptainDataContext } from '../context/CaptainContext'
 import {SocketContext} from '../context/SocketContext';
 import ConfirmRide from '../../Components/ConfirmRide';
 import gsap from 'gsap';
+import StartRide from '../../Components/StartRide';
 
 
 const CaptainHome = () => {
@@ -13,6 +14,7 @@ const CaptainHome = () => {
 
   const [ride,setRide] = useState();
   const [confirm, setConfirm] = useState(false);
+  const [start, setStart] = useState(false);
 
   // useEffect(() => {
   //   gsap.to('.confirm-ride', {
@@ -29,7 +31,6 @@ const CaptainHome = () => {
     const intervalId = setInterval(() => {
       if (navigator.geolocation && captain?._id) {
         navigator.geolocation.getCurrentPosition((position) => {
-          console.log(position.coords.latitude, position.coords.longitude);
           socket.emit('update-location-captain', {
             captainId: captain._id,
             location: {
@@ -45,12 +46,19 @@ const CaptainHome = () => {
       setRide(message);
       setConfirm(true);
     });
+
+
   }, [ride]);
+
+  // useEffect(() => {
+  //   console.log('Start Ride:', start);
+  //   console.log('Ride:', ride);
+  // },[start])
 
   return (
     <div className='relative w-full h-screen bg-gray-900 overflow-hidden'>
       {
-        ride && <ConfirmRide ride={ride} confirm={confirm} setConfirm={setConfirm} setRide={setRide}/>
+        ride && <ConfirmRide ride={ride} confirm={confirm} setConfirm={setConfirm} setRide={setRide} setStart={setStart}/>
       }
 
       {/* <div className='confirm-ride absolute bg-white top-[100%] left-0 w-full h-[70%] flex flex-col rounded-t-lg'>
@@ -80,7 +88,9 @@ const CaptainHome = () => {
         </div>
       </div> */}
 
-      
+      {
+        start && <StartRide ride={ride} start={start} setStart={setStart} setRide={setRide}/>
+      }
 
     </div>
   )

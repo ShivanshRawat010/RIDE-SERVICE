@@ -77,10 +77,32 @@ module.exports.confirmRideService = async (rideId, captainId) => {
       rideId,
       { captain: captainId, status: 'accepted' },
       { new: true }
-    ).populate('captain');
+    ).populate('captain').select('+otp');
     
     return updatedRide;
   } catch (error) {
     throw new Error('Error confirming ride: ' + error.message);
+  }
+}
+
+module.exports.startRideService = async (rideId, otp) => {
+  if (!rideId || !otp) {
+    throw new Error('Ride ID and OTP are required');
+  }
+
+  try {
+    const ride = await rideModel.findById(rideId).select('+otp');
+    if (!ride) {
+      throw new Error('Ride not found');
+    }
+
+    if (ride.otp != otp) {
+      throw new Error('Invalid OTP');
+    }
+
+    ride.status = 'in_progress';
+    return await ride.save();
+  } catch (error) {
+    throw new Error('Error starting ride: ' + error.message);
   }
 }

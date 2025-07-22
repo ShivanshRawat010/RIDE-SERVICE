@@ -22,4 +22,11 @@ router.post('/confirm-ride',
   rideController.confirmRide
 );
 
+router.post('/start-ride',
+  authMiddleware.authCaptain,
+  body('rideId').notEmpty().withMessage('Ride ID is required'),
+  body('otp').notEmpty().withMessage('OTP is required'),
+  rideController.startRide
+);
+
 module.exports = router;

@@ -45,7 +45,7 @@ function initSocket(server) {
 
 function sendMessageToSocketId(socketId, message) {
   if (io) {
-    io.to(socketId).emit('message', message);
+    io.to(socketId).emit(message.event, message.data);
   } else {
     console.error('Socket.io is not initialized');
   }

@@ -16,7 +16,7 @@ const ConfirmRide = (props) => {
       onComplete: () => {
         if (!visible) {
           props.setConfirm(false);
-          props.setRide(null);
+          props.setStart(true);
         }
       }
     });
@@ -34,7 +34,7 @@ const ConfirmRide = (props) => {
       });
       
       if(res.status === 200) {
-        console.log(res.data.ride);
+        setVisible(false);
       }
       
     } catch (error) {

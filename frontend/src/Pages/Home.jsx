@@ -4,6 +4,8 @@ import { FaAngleDown,FaAngleLeft,FaLocationDot } from "react-icons/fa6";
 import axios from 'axios';
 import { SocketContext } from '../context/SocketContext';
 import {UserDataContext} from '../context/UserContext';
+import AcceptRide from '../../Components/AcceptRide';
+import Waiting from '../../Components/Waiting';
 
 const Home = () => {
 
@@ -16,7 +18,10 @@ const Home = () => {
   const [dSelected, setDSelected] = useState(false);
   const [vehiclePanel, setVehiclePanel] = useState(false);
   const [vehicle, setVehicle] = useState();
-  const [fare, setFare] = useState();
+  const [fare, setFare] = useState(null);
+  const [ride,setRide] = useState(null);
+  const [confirm, setConfirm] = useState(false);
+  const [waiting, setWaiting] = useState(false);
 
   const {user} = useContext(UserDataContext);
   const {socket} = useContext(SocketContext);
@@ -32,7 +37,14 @@ const Home = () => {
 
   useEffect(() => {
     socket.on('message', (message) => {
-      console.log('Received message:', message);
+      console.log('Ride message received:', message);
+      setRide(message);
+      setConfirm(true);
+      setWaiting(false);
+    })
+
+    socket.on('ride-started', (message) => {
+      console.log("Ride started 1 2 3", message);
     })
   })
 
@@ -119,6 +131,32 @@ const Home = () => {
     }
   }, [vehicle]);
   
+
+  async function bookRide() {
+    if(!pickup || !destination || !vehicle) {
+      alert('Please select pickup, destination and vehicle');
+      return;
+    }
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/create`, {
+        pickup: pickup,
+        destination: destination,
+        vehicleType: vehicle,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+
+      if(res.status === 201) {
+        console.log('Ride created successfully:', res.data);
+        setWaiting(true);
+      }
+    } catch (error) {
+      console.error('Error booking ride:', error);
+    }
+  }
+
   return (
     <div className='w-full h-screen bg-white relative overflow-hidden'>
 
@@ -128,8 +166,8 @@ const Home = () => {
         </div>
       </div>
 
-      {!vehiclePanel && (
-        <div className='top h-[30%] z-[100] w-full bottom-0 absolute bg-white flex items-center flex-col justify-start pt-4 '>
+      {!vehiclePanel && !waiting && !confirm && (
+        <div className='top h-[30%] z-[20] w-full bottom-0 absolute bg-white flex items-center flex-col justify-start pt-4 '>
           <form onSubmit={(e)=>{
             submitHandler(e);
           }} className='px-8 w-full space-y-4'>
@@ -217,7 +255,7 @@ const Home = () => {
         </div>
       )}
 
-      {vehiclePanel && (
+      {vehiclePanel && !waiting && !confirm && (
         <div className='vehicle h-[70%] top-[100%] z-[100] w-full bottom-0 absolute bg-red-500 flex items-center flex-col justify-start pt-2 px-8'>
           <div className='w-full flex items-center justify-center'>
             <button onClick={(e)=>{
@@ -266,9 +304,22 @@ const Home = () => {
               {fare && fare["auto"]}
             </h3> 
           </button>
+
+          <button className='w-[40%] bg-emerald-500 h-10 rounded-md text-white' onClick={()=>{
+            bookRide();
+          }}>
+            Book Ride
+          </button>
         </div>
       )}
 
+      {
+        ride && <AcceptRide ride={ride} confirm={confirm} setConfirm={setConfirm} setRide={setRide}/>
+      }
+
+      {
+        waiting && <Waiting waiting={waiting} />
+      }
 
     </div>
   )
