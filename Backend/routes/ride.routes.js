@@ -16,4 +16,10 @@ router.post('/create',
 
 router.get('/get-fare', authMiddleware.authUser, query('pickup').notEmpty(), query('destination').notEmpty(),rideController.getFare);
 
+router.post('/confirm-ride',
+  authMiddleware.authCaptain,
+  body('rideId').notEmpty().withMessage('Ride ID is required'),
+  rideController.confirmRide
+);
+
 module.exports = router;

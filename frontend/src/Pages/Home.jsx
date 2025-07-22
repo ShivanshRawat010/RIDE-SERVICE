@@ -31,6 +31,12 @@ const Home = () => {
   })
 
   useEffect(() => {
+    socket.on('message', (message) => {
+      console.log('Received message:', message);
+    })
+  })
+
+  useEffect(() => {
 
     if(vehiclePanel){
       gsap.to('.top', {

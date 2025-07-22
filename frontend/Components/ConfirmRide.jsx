@@ -1,6 +1,7 @@
 import React from 'react'
 import { useEffect,useState } from 'react';
 import gsap from 'gsap';
+import axios from 'axios';
 
 const ConfirmRide = (props) => {
   if (!props.ride) return null; // or show a loading/empty state
@@ -22,6 +23,25 @@ const ConfirmRide = (props) => {
     
   }, [visible]);
 
+  async function handleConfirm() {
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/confirm-ride`, {
+        rideId: props.ride._id,
+      },{
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      
+      if(res.status === 200) {
+        console.log(res.data.ride);
+      }
+      
+    } catch (error) {
+      console.error('Error confirming ride:', error);
+    }
+  }
+
 
   return (
     <div className='confirm-ride absolute bg-white top-[100%] left-0 w-full h-[70%] flex flex-col rounded-t-lg'>
@@ -41,7 +61,8 @@ const ConfirmRide = (props) => {
       </div>
       <div className='w-full h-[25vw]justify-center flex items-center justify-center border-black p-10 gap-16'>
         <button className='bg-blue-500 text-white px-4 py-2 rounded-lg' onClick={() => {
-          setConfirm(true);
+          // setConfirm(true);
+          handleConfirm();
         }}>Confirm Ride</button>
         <button className='bg-red-500 text-white px-4 py-2 rounded-lg ml-2' onClick={() => {
           setConfirm(false);

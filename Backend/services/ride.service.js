@@ -65,3 +65,22 @@ module.exports.createRideService = async ({pickup, destination, vehicleType, use
   }
 }
 
+
+module.exports.confirmRideService = async (rideId, captainId) => {
+  if (!rideId || !captainId) {
+    throw new Error('Ride ID and Captain ID are required');
+  }
+
+  try {
+    const ride = await rideModel.findById(rideId);
+    const updatedRide = await rideModel.findByIdAndUpdate(
+      rideId,
+      { captain: captainId, status: 'accepted' },
+      { new: true }
+    ).populate('captain');
+    
+    return updatedRide;
+  } catch (error) {
+    throw new Error('Error confirming ride: ' + error.message);
+  }
+}
