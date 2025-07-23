@@ -6,6 +6,8 @@ import { SocketContext } from '../context/SocketContext';
 import {UserDataContext} from '../context/UserContext';
 import AcceptRide from '../../Components/AcceptRide';
 import Waiting from '../../Components/Waiting';
+import MakePayment from '../../Components/MakePayment';
+import LiveTracking from '../../Components/LiveTracking';
 
 const Home = () => {
 
@@ -22,6 +24,7 @@ const Home = () => {
   const [ride,setRide] = useState(null);
   const [confirm, setConfirm] = useState(false);
   const [waiting, setWaiting] = useState(false);
+  const [finish, setFinish] = useState(false);
 
   const {user} = useContext(UserDataContext);
   const {socket} = useContext(SocketContext);
@@ -44,7 +47,19 @@ const Home = () => {
     })
 
     socket.on('ride-started', (message) => {
-      console.log("Ride started 1 2 3", message);
+      setConfirm(false);
+      setFinish(true);
+    })
+
+    socket.on('ride-finished', (message) => {
+      setFinish(false);
+      setWaiting(false);
+      setRide(null);
+      setVehiclePanel(false);
+      setConfirm(false);
+      setSelect(false);
+      setPickup('');
+      setDestination('');
     })
   })
 
@@ -160,13 +175,17 @@ const Home = () => {
   return (
     <div className='w-full h-screen bg-white relative overflow-hidden'>
 
-      <div className="bg-[url(https://miro.medium.com/v2/resize:fit:1400/0*gwMx05pqII5hbfmX.gif)] bg-cover h-[70%] w-full absolute top-0 left-0 ">
-        <div className="absolute top-[5%] left-[5%] w-[20%] h-10">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Uber_logo_2018.svg/2560px-Uber_logo_2018.svg.png" className='w-full' />
+      <div
+        className={`bg-cover w-full absolute top-0 left-0 ${!vehiclePanel && !waiting && !confirm && !finish ? 'h-[70%]' : 'h-[90%]'
+          }`}
+      >
+        <div className='w-full h-full'>
+          <LiveTracking />
         </div>
       </div>
 
-      {!vehiclePanel && !waiting && !confirm && (
+
+      {!vehiclePanel && !waiting && !confirm && !finish && (
         <div className='top h-[30%] z-[20] w-full bottom-0 absolute bg-white flex items-center flex-col justify-start pt-4 '>
           <form onSubmit={(e)=>{
             submitHandler(e);
@@ -255,7 +274,7 @@ const Home = () => {
         </div>
       )}
 
-      {vehiclePanel && !waiting && !confirm && (
+      {vehiclePanel && !waiting && !confirm && !finish &&(
         <div className='vehicle h-[70%] top-[100%] z-[100] w-full bottom-0 absolute bg-red-500 flex items-center flex-col justify-start pt-2 px-8'>
           <div className='w-full flex items-center justify-center'>
             <button onClick={(e)=>{
@@ -314,11 +333,15 @@ const Home = () => {
       )}
 
       {
+        waiting && <Waiting waiting={waiting} />
+      }
+
+      {
         ride && <AcceptRide ride={ride} confirm={confirm} setConfirm={setConfirm} setRide={setRide}/>
       }
 
       {
-        waiting && <Waiting waiting={waiting} />
+        finish && <MakePayment finish={finish} ride={ride} setFinish={setFinish} setRide={setRide}/>
       }
 
     </div>

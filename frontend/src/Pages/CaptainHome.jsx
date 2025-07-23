@@ -5,6 +5,8 @@ import {SocketContext} from '../context/SocketContext';
 import ConfirmRide from '../../Components/ConfirmRide';
 import gsap from 'gsap';
 import StartRide from '../../Components/StartRide';
+import FinishRide from '../../Components/FinishRide';
+import LiveTracking from '../../Components/LiveTracking';
 
 
 const CaptainHome = () => {
@@ -15,6 +17,7 @@ const CaptainHome = () => {
   const [ride,setRide] = useState();
   const [confirm, setConfirm] = useState(false);
   const [start, setStart] = useState(false);
+  const [finish, setFinish] = useState(false);
 
   // useEffect(() => {
   //   gsap.to('.confirm-ride', {
@@ -56,7 +59,15 @@ const CaptainHome = () => {
   // },[start])
 
   return (
-    <div className='relative w-full h-screen bg-gray-900 overflow-hidden'>
+    <div className='relative w-full h-screen overflow-hidden'>
+      <div
+        className={`bg-cover w-full absolute top-0 left-0 ${!finish ? 'h-full' : 'h-[90%]'
+          }`}
+      >
+        <div className='w-full h-full'>
+          <LiveTracking />
+        </div>
+      </div>
       {
         ride && <ConfirmRide ride={ride} confirm={confirm} setConfirm={setConfirm} setRide={setRide} setStart={setStart}/>
       }
@@ -89,7 +100,11 @@ const CaptainHome = () => {
       </div> */}
 
       {
-        start && <StartRide ride={ride} start={start} setStart={setStart} setRide={setRide}/>
+        start && <StartRide ride={ride} start={start} setStart={setStart} setRide={setRide} setFinish={setFinish}/>
+      }
+
+      {
+        finish && <FinishRide finish={finish} setFinish={setFinish} ride={ride} setRide={setRide}/>
       }
 
     </div>

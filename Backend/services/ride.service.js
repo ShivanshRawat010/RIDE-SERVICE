@@ -106,3 +106,21 @@ module.exports.startRideService = async (rideId, otp) => {
     throw new Error('Error starting ride: ' + error.message);
   }
 }
+
+module.exports.finishRideService = async (rideId) => {
+  if (!rideId) {
+    throw new Error('Ride ID is required');
+  }
+
+  try {
+    const ride = await rideModel.findById(rideId);
+    if (!ride) {
+      throw new Error('Ride not found');
+    }
+
+    ride.status = 'completed';
+    return await ride.save();
+  } catch (error) {
+    throw new Error('Error finishing ride: ' + error.message);
+  }
+}

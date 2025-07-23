@@ -14,7 +14,7 @@ const StartRide = (props) => {
       onComplete: () => {
         if (!visible) {
           props.setStart(false);
-          props.setRide(null);
+          props.setFinish(true);
         }
       }
     });

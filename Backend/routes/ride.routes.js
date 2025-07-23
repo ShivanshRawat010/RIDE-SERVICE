@@ -29,4 +29,10 @@ router.post('/start-ride',
   rideController.startRide
 );
 
+router.post('/finish-ride',
+  authMiddleware.authCaptain,
+  body('rideId').notEmpty().withMessage('Ride ID is required'),
+  rideController.finishRide
+);
+
 module.exports = router;
