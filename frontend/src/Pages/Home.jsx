@@ -8,6 +8,7 @@ import AcceptRide from '../../Components/AcceptRide';
 import Waiting from '../../Components/Waiting';
 import MakePayment from '../../Components/MakePayment';
 import LiveTracking from '../../Components/LiveTracking';
+import Logo from '../../Components/Logo';
 
 const Home = () => {
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Logo from '../../Components/Logo';
 
 const CaptainLogin = () => {
   const [email, setEmail] = useState('');
@@ -30,8 +31,8 @@ const CaptainLogin = () => {
 
   return (
     <div className='bg-white flex flex-col items-center justify-between h-screen w-full relative'>
-      <div className="absolute top-[5%] left-[5%] w-[20%] h-10">
-        <img src="https://www.svgrepo.com/show/505031/uber-driver.svg" className='w-full' />
+      <div className="absolute top-[5%] left-8 w-[20%] h-10">
+        <Logo />
       </div>
       <div className='pt-32 w-full px-8'>
         <form onSubmit={submitHandler}>

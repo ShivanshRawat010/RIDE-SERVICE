@@ -43,7 +43,7 @@ const CaptainHome = () => {
           });
         });
       }
-    }, 10000);
+    }, 1000);
 
     socket.on('message', (message) => {
       setRide(message);

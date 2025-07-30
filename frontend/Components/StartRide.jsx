@@ -22,7 +22,7 @@ const StartRide = (props) => {
 
   async function handleStartRide(e) {
     e.preventDefault();
-    
+
     try {
       const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/rides/start-ride`, {
         rideId: props.ride._id,
@@ -42,26 +42,35 @@ const StartRide = (props) => {
   }
 
   return (
-    <div className='start-ride absolute bg-white top-[100%] left-0 w-full h-[70%] flex flex-col rounded-t-lg'>
-      <div className='w-full h-[25vw] bg-yellow-400 flex flex-col justify-center items-center rounded-t-lg border-b-2 font-bold text-[8vw] border-black'>
+    <div className='start-ride absolute bg-white top-[100%] left-0 w-full h-[70%] flex flex-col rounded-t-lg overflow-y-auto'>
+      {/* Rider Name */}
+      <div className='w-full h-[20vw] bg-yellow-400 flex flex-col justify-center items-center rounded-t-lg border-b-2 font-bold text-[8vw] border-black'>
         {props.ride.user.fullName.firstName} {props.ride.user.fullName.lastName}
       </div>
-      <div className='w-full h-[25vw] px-4 flex justify-between items-center border-b-2 border-black'>
+
+      {/* Pickup */}
+      <div className='w-full px-4 flex justify-between items-center border-b-2 border-black' style={{height: '13vh'}}>
         <h3 className='text-[5vw] font-bold'>Pickup :</h3>
         <h3 className='max-w-[40%] max-h-[55%] whitespace-normal overflow-hidden'>{props.ride.pickup}</h3>
       </div>
-      <div className='w-full h-[25vw] px-4 flex justify-between items-center border-b-2 border-black'>
+
+      {/* Drop */}
+      <div className='w-full px-4 flex justify-between items-center border-b-2 border-black' style={{height: '13vh'}}>
         <h3 className='text-[5vw] font-bold'>Drop :</h3>
         <h3 className='max-w-[40%] max-h-[55%] whitespace-normal overflow-hidden'>{props.ride.destination}</h3>
       </div>
+
+      {/* Fare */}
       <div className='w-full pt-6 text-[8vw] font-bold flex justify-center items-center'>
         ₹{props.ride.fare}
       </div>
+
+      {/* OTP Form */}
       <form
-        className='w-full flex flex-col items-center gap-8 mt-8'
+        className='w-full flex flex-col items-center gap-8 mt-6 mb-6'
         onSubmit={handleStartRide}
       >
-        <div className="w-full max-w-md mx-auto flex flex-col items-center border-4 border-black rounded-2xl px-8 bg-white shadow-2xl" style={{paddingBottom:'2rem'}}>
+        <div className="w-full max-w-md mx-auto flex flex-col items-center border-4 border-black rounded-2xl px-8 bg-white shadow-2xl" style={{ paddingBottom: '2rem' }}>
           <label className="text-3xl font-bold mb-6" htmlFor="otp-input">
             Enter OTP
           </label>
@@ -74,19 +83,19 @@ const StartRide = (props) => {
             className="rounded-lg px-8 text-4xl text-center outline-none w-full mb-8"
             required
             style={{
-                border: '2px solid #000',
-                borderRadius: '0.5rem',   
-                fontSize: '1.5rem',      
-                textAlign: 'center',
-                outline: 'none',
-                width: '80%',
-                marginBottom: '2rem'      
-              }}
+              border: '2px solid #000',
+              borderRadius: '0.5rem',
+              fontSize: '1.5rem',
+              textAlign: 'center',
+              outline: 'none',
+              width: '80%',
+              marginBottom: '2rem'
+            }}
           />
           <button
             type="submit"
             style={{
-              backgroundColor: '#22c55e', // Tailwind green-500
+              backgroundColor: '#22c55e',
               color: '#fff',
               padding: '0.5rem 2rem',
               borderRadius: '0.5rem',

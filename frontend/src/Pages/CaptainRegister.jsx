@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { CaptainDataContext } from '../context/CaptainContext';
 import { useContext } from 'react';
+import Logo from '../../Components/Logo';
 
 const CaptainRegister = () => {
   const [email, setEmail] = useState('');
@@ -52,8 +53,8 @@ const CaptainRegister = () => {
 
   return (
     <div className='bg-white flex flex-col items-center justify-between h-screen w-full relative'>
-      <div className="absolute top-[5%] left-[5%] w-[20%] h-10">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Uber_logo_2018.svg/2560px-Uber_logo_2018.svg.png" className='w-full' />
+      <div className="absolute top-[5%] left-8 w-[20%] h-10">
+        <Logo/>
       </div>
       <div className='pt-32 w-full px-8'>
         <form onSubmit={submitHandler}>
