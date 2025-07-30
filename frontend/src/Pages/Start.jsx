@@ -13,7 +13,7 @@ const Start = () => {
       </div>
       <div className="bottom h-[25%] w-full bg-white flex justify-center items-center relative pt-6">
         <h1 className='absolute left-[5%] top-[5%] text-black font-bold text-[1.5rem]'>
-          Get started with Uber
+          Get started with RIDE
         </h1>
         <Link to='/userLogin' className="continue bg-black w-[30vh] h-[35%] text-white rounded-md relative flex items-center justify-center">
           Continue
