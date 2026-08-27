@@ -14,7 +14,7 @@ module.exports.calculateFare = async (pickup, destination) => {
     throw new Error('Pickup and destination are required');
   }
 
-  const { distance, duration } = await mapService.getDistancecTimeService(pickup, destination);
+  const { distance, duration } = await mapService.getDistanceTimeService(pickup, destination);
 
   const fareRates = {
     car:    { base: 50, perKm: 10, perMin: 2 },

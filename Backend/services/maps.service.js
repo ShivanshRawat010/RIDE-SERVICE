@@ -1,23 +1,30 @@
 const axios = require('axios');
 const captainModel = require('../models/captain.model');
 
-module.exports.getCoordinatesService = async (address) => {
+
+const getCoordinatesService = async (address) => {
 
   try {
-    const response = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json`, {
+    const response = await axios.get(`https://api.geoapify.com/v1/geocode/search`, {
       params: {
-        address: address,
-        key: process.env.GOOGLE_MAPS_API
+        text: address,
+        apiKey : process.env.GEOAPIFY_API_KEY,
+        format: 'json'
       }
     });
-    const data = response.data;
-    if (data.status !== 'OK') {
+    if (response.status !== 200) {
       throw new Error('Failed to fetch coordinates');
     }
-    const coordinates = data.results[0].geometry.location;
+    const data = response.data;
+
+    if (!data.results?.length) {
+      throw new Error("No coordinates found");
+    }
+
+    const properties = data.results[0];
     return {
-      latitude: coordinates.lat,
-      longitude: coordinates.lng
+      latitude: properties.lat,
+      longitude: properties.lon
     }
   } catch (error) {
     console.error('Error fetching coordinates:', error);
@@ -25,53 +32,80 @@ module.exports.getCoordinatesService = async (address) => {
   }
 }
 
-module.exports.getDistancecTimeService = async (origin, destination) => {
+const getDistanceTimeService = async (origin, destination) => {
+  
   try {
-    const response = await axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json`, {
-      params: {
-        origins: origin,
-        destinations: destination,
-        key: process.env.GOOGLE_MAPS_API
+    const [originCoordinates, destinationCoordinates] = await Promise.all([
+      getCoordinatesService(origin),
+      getCoordinatesService(destination)
+    ]);
+    
+    const waypoints = `${originCoordinates.latitude},${originCoordinates.longitude}|${destinationCoordinates.latitude},${destinationCoordinates.longitude}`
+
+    const response = await axios.get(`https://api.geoapify.com/v1/routing`, {
+        params : {
+          apiKey: process.env.GEOAPIFY_API_KEY,
+          waypoints: waypoints,
+          mode: 'drive',
+          units: 'metric',
+          format: 'json'
+        }
       }
-    });
-    const data = response.data;
-    if (data.status !== 'OK') {
-      throw new Error('Failed to fetch distance and time');
+    )
+
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch route details.');
     }
-    const element = data.rows[0].elements[0];
-    if (element.status !== 'OK') {
-      throw new Error('Failed to fetch distance and time');
+
+    const data = response.data
+
+    if (!data.results?.length) {
+      throw new Error("No route found");
     }
+
     return {
-      distance: element.distance.value,
-      duration: element.duration.value
+      distance: data.results[0].distance,
+      duration: data.results[0].time
     }
+
   } catch (error) {
     console.error('Error fetching distance and time:', error);
     throw error;
   }
 }
 
-module.exports.getSuggestedPlacesService = async (address) => {
+const getSuggestedPlacesService = async (address) => {
   try {
-    const response = await axios.get(`https://maps.googleapis.com/maps/api/place/autocomplete/json`, {
-      params: {
-        input: address,
-        key: process.env.GOOGLE_MAPS_API
+    const response = await axios.get(
+      "https://api.geoapify.com/v1/geocode/autocomplete",
+      {
+        params: {
+          text: address,
+          apiKey: process.env.GEOAPIFY_API_KEY,
+          limit: 5,
+          format: 'json'
+        }
       }
-    });
-    const data = response.data;
-    if (data.status !== 'OK') {
-      throw new Error('Failed to fetch suggested places');
+    );
+
+    if (response.status !== 200) {
+      throw new Error('Failed to fetch coordinates');
     }
-    return data.predictions;
+
+    const data = response.data;
+
+    if (!data.results?.length) {
+      throw new Error("No suggested places found");
+    }
+    return data.results;
+
   } catch (error) {
-    console.error('Error fetching suggested places:', error);
+    console.error("Error fetching suggested places:", error);
     throw error;
   }
-}
+};
 
-module.exports.getCaptainsWithinRadiusService = async (latitude, longitude, radius) => {
+const getCaptainsWithinRadiusService = async (latitude, longitude, radius) => {
   const earthRadiusInKilometers = 6378;
   const radiusInKilometers = radius;
   const radiusInRadians = radiusInKilometers / earthRadiusInKilometers;
@@ -85,4 +119,11 @@ module.exports.getCaptainsWithinRadiusService = async (latitude, longitude, radi
   });
 
   return captains;
+}
+
+module.exports = {
+  getCoordinatesService,
+  getDistanceTimeService,
+  getSuggestedPlacesService,
+  getCaptainsWithinRadiusService
 }

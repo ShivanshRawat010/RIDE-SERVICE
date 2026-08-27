@@ -244,9 +244,9 @@ const Home = () => {
                     </div>
                     <button className='block text-[1rem] h-10 font-[500] text-gray-700 w-[85%] whitespace-nowrap overflow-x-hidden text-left' onClick={(e)=>{
                       e.preventDefault();
-                      setPickup(item.description);            
+                      setPickup(item.formatted);            
                     }}>
-                      {item.description}
+                      {item.formatted}
                     </button>
                   </div>
                 ))
@@ -263,9 +263,9 @@ const Home = () => {
                     </div>
                     <button className='block text-[1rem] h-10 font-[500] text-gray-700 w-[85%] whitespace-nowrap overflow-x-hidden text-left' onClick={(e)=>{
                       e.preventDefault();
-                      setDestination(item.description);            
+                      setDestination(item.formatted);            
                     }}>
-                      {item.description}
+                      {item.formatted}
                     </button>
                   </div>
                 ))
