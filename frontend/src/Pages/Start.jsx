@@ -6,7 +6,7 @@ import Logo from '../../Components/Logo';
 const Start = () => {
   return (
     <div className='w-full h-screen relative'>
-      <div className="top bg-[url(https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Modern_British_LED_Traffic_Light.jpg/440px-Modern_British_LED_Traffic_Light.jpg)] h-[75%] w-full bg-center bg-no-repeat flex items-center justify-center bg-gray-500">
+      <div className="top bg-[url(https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/Modern_British_LED_Traffic_Light.jpg/500px-Modern_British_LED_Traffic_Light.jpg?utm_source=en.wikipedia.org&utm_campaign=parser&utm_content=thumbnail)] h-[75%] w-full bg-center bg-no-repeat flex items-center justify-center bg-gray-500">
         <div className="absolute top-[5%] left-[5%] w-[20%] h-10">
           <Logo />
         </div>
